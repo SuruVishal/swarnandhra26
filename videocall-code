@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Call</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; }
+        video { width: 400px; height: 300px; border: 1px solid black; }
+    </style>
+</head>
+<body>
+    <video id="localVideo" autoplay muted></video>
+    <video id="remoteVideo" autoplay></video>
+    <script>
+        const localVideo = document.getElementById('localVideo');
+        const remoteVideo = document.getElementById('remoteVideo');
+        const peerConnection = new RTCPeerConnection();
+
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                localVideo.srcObject = stream;
+                stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
+            });
+
+        peerConnection.ontrack = event => {
+            remoteVideo.srcObject = event.streams[0];
+        };
+
+        // Add signaling logic here (e.g., WebSocket or other signaling server)
+    </script>
+</body>
+</html>
+
